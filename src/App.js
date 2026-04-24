@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 
 // ══════════════════════════════════════════════════════════════
@@ -139,7 +139,6 @@ const SESSIONS = {
           { id:"D", icon:"🛡️", label:"Netting + forward résiduel GBP", desc:"Netting puis couverture de la position nette" },
         ],
         computeScore: (choice) => {
-          const coeff={A:1.0, B:0.55, C:0.20, D:0.25};
           const scores={A:20, B:45, C:100, D:80};
           return scores[choice];
         },
@@ -313,7 +312,9 @@ export default function App() {
   const [decisions, setDecisions] = useState([]);
   const [pinInput, setPinInput] = useState("");
   const [teamNameInput, setTeamNameInput] = useState("");
+  const [teamPasswordInput, setTeamPasswordInput] = useState("");
   const [pinErr, setPinErr] = useState("");
+  const [teamErr, setTeamErr] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Chargement initial
@@ -436,11 +437,27 @@ export default function App() {
 
   // ─ TEAM ────────────────────────────────────────────────────
   const registerTeam = async () => {
-    if (!teamNameInput.trim()) return;
-    setLoading(true);
+    if (!teamNameInput.trim() || !teamPasswordInput.trim()) {
+      setTeamErr("Veuillez remplir le nom et le mot de passe."); return;
+    }
+    setLoading(true); setTeamErr("");
+    const name = teamNameInput.trim();
+    const password = teamPasswordInput.trim();
+    // Vérifier si l'équipe existe déjà
+    const existing = teams.find(t => t.name.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      // Reconnexion : vérifier le mot de passe
+      if (existing.password !== password) {
+        setTeamErr("Mot de passe incorrect pour cette équipe."); setLoading(false); return;
+      }
+      const me = { id: existing.id, name: existing.name };
+      localStorage.setItem("fxmanager_team", JSON.stringify(me));
+      setMyTeam(me); setView("team"); setLoading(false); return;
+    }
+    // Nouvelle équipe
     const id = `t_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`;
-    const me = { id, name: teamNameInput.trim() };
-    await upsertTeam({ id: me.id, name: me.name, score1: 0, score2: 0, total: 0 });
+    const me = { id, name };
+    await upsertTeam({ id: me.id, name: me.name, password, score1: 0, score2: 0, total: 0 });
     localStorage.setItem("fxmanager_team", JSON.stringify(me));
     setMyTeam(me);
     const t = await getTeams();
@@ -511,8 +528,19 @@ export default function App() {
       <div style={{ ...card(), maxWidth: 400, width: "100%", textAlign: "center" }}>
         <div style={{ fontSize: 36, marginBottom: 6 }}>💹</div>
         <h2 style={{ margin: "0 0 4px", color: "#f1f5f9" }}>FX Manager</h2>
-        <p style={{ color: "#475569", margin: "0 0 24px", fontSize: 14 }}>Entrez le nom de votre équipe</p>
-        <input style={{ ...inp, textAlign: "center", fontSize: 16, padding: "12px 14px" }} placeholder="Ex: Team Alpha, Équipe 3…" value={teamNameInput} onChange={e => setTeamNameInput(e.target.value)} onKeyDown={e => e.key === "Enter" && registerTeam()} autoFocus />
+        <p style={{ color: "#475569", margin: "0 0 20px", fontSize: 14 }}>Créez votre équipe ou reconnectez-vous</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, textAlign: "left" }}>
+          <div>
+            <div style={{ color: "#475569", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 5 }}>Nom de l'équipe</div>
+            <input style={{ ...inp, fontSize: 15 }} placeholder="Ex: Team Alpha, Les Requins…" value={teamNameInput} onChange={e => setTeamNameInput(e.target.value)} autoFocus />
+          </div>
+          <div>
+            <div style={{ color: "#475569", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 5 }}>Mot de passe</div>
+            <input style={{ ...inp, fontSize: 15 }} type="password" placeholder="Choisissez un mot de passe" value={teamPasswordInput} onChange={e => setTeamPasswordInput(e.target.value)} onKeyDown={e => e.key === "Enter" && registerTeam()} />
+          </div>
+          {teamErr && <p style={{ color: "#ef4444", fontSize: 13, margin: 0 }}>{teamErr}</p>}
+          <div style={{ color: "#1e293b", fontSize: 11, marginTop: 2 }}>Si votre équipe existe déjà, entrez le même nom + mot de passe pour vous reconnecter.</div>
+        </div>
         <div style={{ display: "flex", gap: 10, marginTop: 16, justifyContent: "center" }}>
           <button style={{ ...btn(), opacity: loading ? 0.6 : 1, padding: "11px 28px" }} onClick={registerTeam} disabled={loading}>{loading ? "Connexion…" : "Rejoindre le jeu"}</button>
           <button style={outBtn()} onClick={() => setView("landing")}>Retour</button>
