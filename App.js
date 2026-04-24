@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 
 // ══════════════════════════════════════════════════════════════
@@ -139,7 +139,6 @@ const SESSIONS = {
           { id:"D", icon:"🛡️", label:"Netting + forward résiduel GBP", desc:"Netting puis couverture de la position nette" },
         ],
         computeScore: (choice) => {
-          const coeff={A:1.0, B:0.55, C:0.20, D:0.25};
           const scores={A:20, B:45, C:100, D:80};
           return scores[choice];
         },
