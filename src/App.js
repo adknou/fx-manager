@@ -569,14 +569,28 @@ function MarketDataPanel({data, round}){
         {data.mmLend ? <Row label="Taux prêt" value={data.mmLend}/> : <Row label="Taux prêt" value="Non disponible"/>}
       </Block>
 
-      {/* Options — toujours affichées */}
-      <Block title="Options sur Devises" accent="#1e2a3a">
-        {data.optionPut
-          ? splitLines(data.optionPut).map((l,i)=>{const p=l.split("|");return <Row key={i} label={`Put ${i+1}`} value={p.map(x=>x.trim()).join(" · ")}/>;})
-          : <><Row label="Put" value="Données non disponibles ce round"/></>}
+      {/* Option d'achat (Call) — encadré séparé, toujours affiché */}
+      <Block title="Option d'achat sur devise (Call)" accent="#1e2a3a">
         {data.optionCall
-          ? splitLines(data.optionCall).map((l,i)=>{const p=l.split("|");return <Row key={i} label={`Call ${i+1}`} value={p.map(x=>x.trim()).join(" · ")}/>;})
-          : <><Row label="Call" value="Données non disponibles ce round"/></>}
+          ? splitLines(data.optionCall).map((l,i)=>{
+              const p=l.split("|");
+              const bank=p.find(x=>x.toLowerCase().includes("banque"))?.trim()||`Banque ${i+1}`;
+              const details=p.filter(x=>!x.toLowerCase().includes("banque")&&!x.toLowerCase().includes("call")).map(x=>x.trim()).join(" · ");
+              return <Row key={i} label={bank} value={details}/>;
+            })
+          : <Row label="Conditions" value="Non disponibles ce round"/>}
+      </Block>
+
+      {/* Option de vente (Put) — encadré séparé, toujours affiché */}
+      <Block title="Option de vente sur devise (Put)" accent="#1e2a3a">
+        {data.optionPut
+          ? splitLines(data.optionPut).map((l,i)=>{
+              const p=l.split("|");
+              const bank=p.find(x=>x.toLowerCase().includes("banque"))?.trim()||`Banque ${i+1}`;
+              const details=p.filter(x=>!x.toLowerCase().includes("banque")&&!x.toLowerCase().includes("put")).map(x=>x.trim()).join(" · ");
+              return <Row key={i} label={bank} value={details}/>;
+            })
+          : <Row label="Conditions" value="Non disponibles ce round"/>}
       </Block>
 
       {/* Swap de change — toujours affiché */}
