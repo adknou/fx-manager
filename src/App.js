@@ -551,45 +551,87 @@ function MarketDataPanel({data, round}){
   const fwdPairs = fwdKey ? pairBanks(data[fwdKey], fwdAskKey?data[fwdAskKey]:null) : [];
   const currency = round?.currency||"";
   const pair = currency==="GBP"?"EUR/GBP":currency==="JPY"?"EUR/JPY":currency==="MAD"?"EUR/MAD":"EUR/USD";
+  const na = <span style={{color:"#334155",fontStyle:"italic"}}>Non applicable ce round</span>;
+  const splitLines = (str) => str ? str.split("\n") : [];
   return(
     <div>
+      {/* Taux de change — toujours affiché */}
       {spotPairs.length>0&&<Block title="Taux Spot" accent="#1e3a5f">
-        {spotPairs.map((p,i)=><Row key={i} label={p.bank} value={`${pair} : ${p.bid} — ${p.ask}`}/>)}
+        {spotPairs.map((p,i)=><Row key={i} label={p.bank} value={`${pair} : BID ${p.bid} | ASK ${p.ask}`}/>)}
       </Block>}
       {fwdPairs.length>0&&<Block title={`Taux Forward ${fwdLabel}`} accent="#1e3a5f">
-        {fwdPairs.map((p,i)=><Row key={i} label={p.bank} value={`${pair} : ${p.bid} — ${p.ask}`}/>)}
+        {fwdPairs.map((p,i)=><Row key={i} label={p.bank} value={`${pair} : BID ${p.bid} | ASK ${p.ask}`}/>)}
       </Block>}
-      {(data.mmBorrow||data.mmLend)&&<Block title="Marché Monétaire" accent="#1e3a5f">
-        {data.mmBorrow&&<Row label="Emprunt" value={data.mmBorrow}/>}
-        {data.mmLend&&<Row label="Prêt" value={data.mmLend}/>}
-      </Block>}
-      {data.swapChange&&<Block title="Swap de Change" accent="#1a3a2f">
-        {data.swapChange.split("\n").map((l,i)=>{const p=l.split("→");return <Row key={i} label={p[0]?.trim()||l} value={p[1]?.trim()||""}/>;})}
-      </Block>}
-      {data.swapDevises&&<Block title="Swap de Devises" accent="#1a3a2f">
-        {data.swapDevises.split("\n").map((l,i)=>{const p=l.split(":");return <Row key={i} label={p[0]?.trim()||l} value={p.slice(1).join(":").trim()||""}/>;})}
-      </Block>}
-      {data.coutTransaction&&<Block title="Coûts de Transaction" accent="#2a2a1a">
-        <Row label="Coût par transfert" value={data.coutTransaction}/>
-      </Block>}
-      {data.bpiContrat&&<Block title="BPI — Assurance Change Contrat" accent="#1a2a1a">
-        {data.bpiContrat.split("—").map((l,i)=>{const p=l.trim().split(":");return <Row key={i} label={p[0]?.trim()||l.trim()} value={p.slice(1).join(":").trim()||""}/>;})}
-      </Block>}
-      {data.bpiNego&&<Block title="BPI — Assurance Change Négociation" accent="#1a2a1a">
-        {data.bpiNego.split("\n").map((l,i)=>{const p=l.split(":");return <Row key={i} label={p[0]?.trim()||l} value={p.slice(1).join(":").trim()||""}/>;})}
-      </Block>}
+
+      {/* Marché monétaire — toujours affiché */}
+      <Block title="Marché Monétaire" accent="#1e3a5f">
+        {data.mmBorrow ? <Row label="Taux emprunt" value={data.mmBorrow}/> : <Row label="Taux emprunt" value="Non disponible"/>}
+        {data.mmLend ? <Row label="Taux prêt" value={data.mmLend}/> : <Row label="Taux prêt" value="Non disponible"/>}
+      </Block>
+
+      {/* Options — toujours affichées */}
+      <Block title="Options sur Devises" accent="#1e2a3a">
+        {data.optionPut
+          ? splitLines(data.optionPut).map((l,i)=>{const p=l.split("|");return <Row key={i} label={`Put ${i+1}`} value={p.map(x=>x.trim()).join(" · ")}/>;})
+          : <><Row label="Put" value="Données non disponibles ce round"/></>}
+        {data.optionCall
+          ? splitLines(data.optionCall).map((l,i)=>{const p=l.split("|");return <Row key={i} label={`Call ${i+1}`} value={p.map(x=>x.trim()).join(" · ")}/>;})
+          : <><Row label="Call" value="Données non disponibles ce round"/></>}
+      </Block>
+
+      {/* Swap de change — toujours affiché */}
+      <Block title="Swap de Change" accent="#1a3a2f">
+        {data.swapChange
+          ? splitLines(data.swapChange).map((l,i)=>{const p=l.split("→");return <Row key={i} label={p[0]?.trim()||l} value={p[1]?.trim()||""}/>; })
+          : <Row label="Conditions" value="Non disponibles ce round"/>}
+      </Block>
+
+      {/* Swap de devises — toujours affiché */}
+      <Block title="Swap de Devises" accent="#1a3a2f">
+        {data.swapDevises
+          ? splitLines(data.swapDevises).map((l,i)=>{const p=l.split(":");return <Row key={i} label={p[0]?.trim()||l} value={p.slice(1).join(":").trim()||""}/>; })
+          : <Row label="Conditions" value="Non disponibles ce round"/>}
+      </Block>
+
+      {/* BPI Assurance change contrat — toujours affiché */}
+      <Block title="BPI — Assurance Change Contrat" accent="#1a2a1a">
+        {data.bpiContrat
+          ? splitLines(data.bpiContrat).map((l,i)=>{const p=l.split("—");return <Row key={i} label={p[0]?.trim()||l} value={p.slice(1).join("—").trim()||""}/>; })
+          : <Row label="Conditions" value="Non disponibles ce round"/>}
+      </Block>
+
+      {/* BPI Assurance change négociation — toujours affiché */}
+      <Block title="BPI — Assurance Change Négociation" accent="#1a2a1a">
+        {data.bpiNego
+          ? splitLines(data.bpiNego).map((l,i)=>{const p=l.split(":");return <Row key={i} label={p[0]?.trim()||l} value={p.slice(1).join(":").trim()||""}/>; })
+          : <Row label="Conditions" value="Non disponibles ce round"/>}
+      </Block>
+
+      {/* Termaillage — toujours affiché */}
+      <Block title="Termaillage" accent="#2a1a2a">
+        {data.termaillage
+          ? splitLines(data.termaillage).map((l,i)=>{const p=l.split(":");return <Row key={i} label={p[0]?.trim()||l} value={p.slice(1).join(":").trim()||""}/>; })
+          : <Row label="Conditions" value="Non disponibles ce round"/>}
+      </Block>
+
+      {/* Conditions fournisseur et client — affichées si renseignées */}
       {(data.escompteFournisseur||data.penaliteFournisseur)&&<Block title="Conditions Fournisseur" accent="#2a1a1a">
-        {data.escompteFournisseur&&<Row label="Escompte (paiement anticipé)" value={data.escompteFournisseur}/>}
-        {data.penaliteFournisseur&&<Row label="Pénalité (paiement différé)" value={data.penaliteFournisseur}/>}
+        <Row label="Escompte (paiement anticipé)" value={data.escompteFournisseur||"N/A"}/>
+        <Row label="Pénalité (paiement différé)" value={data.penaliteFournisseur||"N/A"}/>
       </Block>}
       {(data.escompteClient||data.penaliteClient)&&<Block title="Conditions Client" accent="#2a1a1a">
-        {data.escompteClient&&<Row label="Escompte (encaissement anticipé)" value={data.escompteClient}/>}
-        {data.penaliteClient&&<Row label="Pénalité (encaissement différé)" value={data.penaliteClient}/>}
+        <Row label="Escompte (encaissement anticipé)" value={data.escompteClient||"N/A"}/>
+        <Row label="Pénalité (encaissement différé)" value={data.penaliteClient||"N/A"}/>
       </Block>}
+
+      {/* Financement international — si applicable */}
       {(data.creditSyndique||data.euroObligation||data.convertible)&&<Block title="Financement International" accent="#1a1a2a">
         {data.creditSyndique&&<Row label="Crédit syndiqué" value={data.creditSyndique}/>}
         {data.euroObligation&&<Row label="Euro-obligation" value={data.euroObligation}/>}
         {data.convertible&&<Row label="Obligation convertible" value={data.convertible}/>}
+      </Block>}
+      {data.coutTransaction&&<Block title="Coûts de Transaction" accent="#2a2a1a">
+        <Row label="Coût par transfert" value={data.coutTransaction}/>
       </Block>}
     </div>
   );
