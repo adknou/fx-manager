@@ -31,8 +31,8 @@ const COMPANY = {name:"Armor International SA", tag:"Équipements industriels ·
 const SESSIONS = {
   1:{name:"Session 1 — Fondamentaux",accent:"#00d4aa",rounds:[
     {id:1,title:"Contrat américain",subtitle:"Q1 — Créance export USD",
-     context:"Armor vient de livrer une commande à un client américain. Paiement de 500 000 USD attendu dans 90 jours. Date de signature du contrat commercial : aujourd'hui. Vous avez 15 jours pour souscrire une assurance change BPI si vous le souhaitez.",
-     exposition:"Créance : +500 000 USD\nÉchéance : 90 jours\nContrat signé : aujourd'hui (BPI ≤ J+15)",
+     context:"Armor vient de livrer une commande à un client américain. Paiement de 500 000 USD attendu dans 90 jours. Date de signature du contrat commercial : aujourd'hui. ",
+     exposition:"Créance : +500 000 USD\nÉchéance : 90 jours\nContrat signé : aujourd'hui",
      ops_net:-620000, hasCommercialContract:true, isAO:false, currency:"USD", amount:500000, isExport:true,
      marketData:{
        spotBid:[["Banque Crédit Ouest","1,0842"],["Banque Atlantique","1,0838"]],
@@ -42,6 +42,8 @@ const SESSIONS = {
        mmBorrow:"3,50 %/an (EUR)",mmLend:"5,20 %/an (USD)",
        bpiContrat:"Cours garanti : 1,0900 — Prime : 1,8 % — Délai max : J+15",
        bpiNego:null,
+       swapChange:"Vente spot USD aujourd'hui + rachat à terme — cours spot BID: 1,0842 | cours terme BID 90j: 1,0912",
+       swapDevises:"Échange de flux d'intérêts et de principal EUR/USD — taux USD fixe: 4,20 % | basis swap: −1,10 % | durée min: 1 an",
        escompteClient:null, penaliteClient:null,
        escompteFournisseur:null, penaliteFournisseur:null,
      },
@@ -65,7 +67,7 @@ const SESSIONS = {
      optimal:"forward_CO"},
     {id:2,title:"Matières premières UK",subtitle:"Q2 — Dette import GBP",
      context:"Armor règle son fournisseur britannique. Facture de 300 000 GBP payable dans 60 jours. Le fournisseur propose un escompte de 0,8% pour paiement immédiat, ou accepte un délai de 90j contre une pénalité de 1,2%.",
-     exposition:"Dette : −300 000 GBP\nÉchéance : 60 jours\nContrat signé : il y a 20 jours (BPI hors délai J+15)",
+     exposition:"Dette : −300 000 GBP\nÉchéance : 60 jours\nContrat signé : il y a 20 jours",
      ops_net:-890000, hasCommercialContract:true, isAO:false, currency:"GBP", amount:300000, isExport:false,
      marketData:{
        spotBid:[["Banque Crédit Ouest","0,8643"],["Banque Atlantique","0,8647"]],
@@ -75,6 +77,8 @@ const SESSIONS = {
        mmBorrow:"3,50 %/an (EUR)",mmLend:"5,00 %/an (GBP)",
        bpiContrat:"Hors délai — contrat signé il y a 20 jours (max J+15)",
        bpiNego:null,
+       swapChange:"Vente spot GBP aujourd'hui + rachat à terme — cours spot BID: 0,8643 | cours terme BID 60j: 0,8612",
+       swapDevises:"Échange de flux d'intérêts et de principal EUR/GBP — taux GBP fixe: 4,80 % | basis swap: −0,90 % | durée min: 1 an",
        escompteFournisseur:"0,8 % pour paiement immédiat",
        penaliteFournisseur:"1,2 % pour paiement à 90j",
        escompteClient:null, penaliteClient:null,
@@ -105,8 +109,8 @@ const SESSIONS = {
      explanation:"Forward Atlantique (0,8624) optimal : 348 205 €. BPI hors délai (contrat signé il y a 20j). L'escompte fournisseur (paiement immédiat) coûte 2 772 € de remise mais évite le risque de change — pertinent. La pénalité 90j est la pire option.",
      optimal:"forward_ATL"},
     {id:3,title:"Contrat japonais",subtitle:"Q3 — Créance export JPY",
-     context:"Armor encaisse 80 000 000 JPY dans 6 mois. Différentiel de taux EUR/JPY exceptionnel. Contrat signé aujourd'hui — BPI disponible.",
-     exposition:"Créance : +80 000 000 JPY\nÉchéance : 6 mois\nContrat signé : aujourd'hui (BPI ≤ J+15)",
+     context:"Armor encaisse 80 000 000 JPY dans 6 mois. Différentiel de taux EUR/JPY exceptionnel. Contrat signé aujourd'hui.",
+     exposition:"Créance : +80 000 000 JPY\nÉchéance : 6 mois\nContrat signé : aujourd'hui",
      ops_net:-780000, hasCommercialContract:true, isAO:false, currency:"JPY", amount:80000000, isExport:true,
      marketData:{
        spotBid:[["Banque Crédit Ouest","162,25"],["Banque Atlantique","162,30"]],
@@ -116,6 +120,8 @@ const SESSIONS = {
        mmBorrow:"3,50 %/an (EUR)",mmLend:"0,10 %/an (JPY)",
        bpiContrat:"Cours garanti : 160,00 — Prime : 1,5 % — Délai max : J+15",
        bpiNego:null,
+       swapChange:"Vente spot JPY aujourd'hui + rachat à terme — cours spot BID: 162,25 | cours terme BID 180j: 160,05",
+       swapDevises:"Échange de flux d'intérêts et de principal EUR/JPY — taux JPY fixe: 0,50 % | basis swap: +2,80 % | durée min: 1 an",
        escompteClient:"0,5 % pour paiement à 3 mois (au lieu de 6)",
        penaliteClient:null, escompteFournisseur:null, penaliteFournisseur:null,
      },
@@ -191,7 +197,10 @@ const SESSIONS = {
        fwdAsk90:[["Banque Crédit Ouest","USD:1,0918 | GBP:0,8628 | JPY:161,60"],["Banque Atlantique","USD:1,0912 | GBP:0,8624 | JPY:161,55"]],
        mmBorrow:"3,50 %/an (EUR)",mmLend:"USD:5,20% | GBP:5,00% | JPY:0,10%",
        bpiContrat:"Cours garantis : USD 1,0900 | GBP 0,8620 | JPY 161,50 — Prime 1,5 % chaque",
-       bpiNego:null, escompteClient:"0,5 % (USD) pour paiement immédiat",
+       bpiNego:null,
+       swapChange:"Vente spot devise + rachat à terme — USD: spot 1,0842/terme 1,0898 | GBP: spot 0,8643/terme 0,8612 | JPY: spot 162,25/terme 161,40",
+       swapDevises:"Échange de flux d'intérêts et de principal multi-devises — durée min: 1 an | taux selon devise et maturité",
+       escompteClient:"0,5 % (USD) pour paiement immédiat",
        penaliteClient:null, escompteFournisseur:"0,8 % (GBP) pour paiement immédiat",
        penaliteFournisseur:null,
      },
@@ -230,6 +239,8 @@ const SESSIONS = {
        fwdAsk90:[["Banque Crédit Ouest","GBP/EUR:0,8628"],["Banque Atlantique","GBP/EUR:0,8624"]],
        mmBorrow:"3,50 %/an (EUR)",mmLend:"5,00 %/an (GBP)",
        bpiContrat:null, bpiNego:null,
+       swapChange:"Vente spot GBP aujourd'hui + rachat à terme — cours spot BID: 0,8643 | cours terme BID 90j: 0,8612",
+       swapDevises:"Échange de flux d'intérêts et de principal EUR/GBP — taux GBP fixe: 4,80 % | basis swap: −0,90 % | durée min: 1 an",
        escompteClient:null, penaliteClient:null, escompteFournisseur:null, penaliteFournisseur:null,
        coutTransaction:"0,30 % par transfert brut",
      },
@@ -261,6 +272,8 @@ const SESSIONS = {
        mmBorrow:"3,50 %/an (EUR)",mmLend:"5,20 %/an (USD)",
        bpiContrat:"Non disponible — aucun contrat signé",
        bpiNego:"Cours garanti : 1,0850 — Prime : 2,2 % — Valable 60 jours\nSi AO perdu : prime partiellement remboursée (70%)",
+       swapChange:"Vente spot USD aujourd'hui + rachat à terme 45j — cours spot BID: 1,0842 | cours terme BID 45j: 1,0868",
+       swapDevises:"Échange de flux d'intérêts et de principal EUR/USD — taux USD fixe: 4,20 % | basis swap: −1,10 % | durée min: 1 an",
        escompteClient:null, penaliteClient:null, escompteFournisseur:null, penaliteFournisseur:null,
      },
      computeHedgeResult:(instrument,banque,montant)=>{
@@ -327,7 +340,7 @@ const SESSIONS = {
      optimal:"swap_devises"},
     {id:4,title:"Investissement au Maroc",subtitle:"Q9 — VAN d'un IDE + couverture MAD",
      context:"Armor finalise son projet d'implantation à Casablanca. Elle recevra 2 500 000 MAD/an pendant 5 ans. Comment couvrir ce risque MAD/EUR sur le long terme ? Contrat signé aujourd'hui.",
-     exposition:"Flux annuels : +2 500 000 MAD\nHorizon : 5 ans\nContrat signé : aujourd'hui (BPI ≤ J+15)",
+     exposition:"Flux annuels : +2 500 000 MAD\nHorizon : 5 ans\nContrat signé : aujourd'hui",
      ops_net:250000, hasCommercialContract:true, isAO:false, currency:"MAD", amount:2500000, isExport:true,
      marketData:{
        spotBid:[["Banque Crédit Ouest","10,8320"],["Banque Atlantique","10,8350"]],
@@ -337,6 +350,8 @@ const SESSIONS = {
        mmBorrow:"3,50 %/an (EUR)",mmLend:"4,50 %/an (MAD)",
        bpiContrat:"Cours garanti : 11,20 — Prime : 2,0 % — Délai max : J+15",
        bpiNego:null,
+       swapChange:"Vente spot MAD aujourd'hui + rachat à terme 1 an — cours spot BID: 10,8320 | cours terme BID 1 an: 11,1820",
+       swapDevises:"Échange de flux d'intérêts et de principal EUR/MAD — taux MAD fixe: 4,50 % | basis swap: +0,80 % | durée: 5 ans disponible",
        escompteClient:"1,0 % pour paiement à 6 mois (au lieu de 12)",
        penaliteClient:null, escompteFournisseur:null, penaliteFournisseur:null,
      },
@@ -363,86 +378,108 @@ const SESSIONS = {
      realized:"EUR/MAD réalisé à 1 an : 11,35 — Dirham déprécié",
      explanation:"Forward Atlantique (100 pts) : 222 948 €/an sécurisé. BPI contrat (90 pts) : 221 726 € net de prime — légèrement inférieur mais garanti sur 5 ans. Sans couverture : 220 264 € — le MAD s'est déprécié, la couverture était justifiée.",
      optimal:"forward_ATL"},
-    {id:5,title:"Crise de change finale",subtitle:"Q10 — Pays émergent en crise",
-     context:"La devise d'un pays partenaire d'Armor s'effondre de −25 % en 48h. Marchés forward gelés. Armor a des actifs, des créances et des dettes dans cette devise. Décision urgente.",
-     exposition:"Actifs filiale : 8 000 000 devise locale\nCréance export EUR : +500 000 EUR\nDette locale : −2 000 000 devise locale",
-     ops_net:150000, hasCommercialContract:true, isAO:false, currency:"LOCAL", amount:null, isExport:true,
+    {id:5,title:"Dividende de la filiale américaine",subtitle:"Q10 — Encaissement USD dans 3 mois",
+     context:"Le Conseil d'Administration d'Armor SA a décidé aujourd'hui le versement d'un dividende de 1 500 000 USD par sa filiale américaine, encaissable dans 3 mois. Le montant final peut varier de ±5 % selon la clôture comptable définitive. Les dernières publications de la Fed signalent un pivot accommodant. Le trésorier anticipe une dépréciation du dollar de 2 à 3 % sur les 3 prochains mois (EUR/USD de 1,0850 vers 1,1100–1,1150).",
+     exposition:"Dividende filiale USA : +1 500 000 USD (±5 %)\nÉchéance : 3 mois\nDécision CA : aujourd'hui (BPI ≤ J+15)",
+     ops_net:180000, hasCommercialContract:true, isAO:false, currency:"USD", amount:1500000, isExport:true,
      marketData:{
-       spotBid:[["Banque Crédit Ouest","Marché gelé — cours indicatif −25 %"],["Banque Atlantique","Cours indicatif seulement"]],
-       spotAsk:[["Banque Crédit Ouest","Spread très large — +8 %"],["Banque Atlantique","Spread très large — +8 %"]],
-       fwdBid90:[["Banque Crédit Ouest","Indisponible"],["Banque Atlantique","Indisponible"]],
-       fwdAsk90:[["Banque Crédit Ouest","Indisponible"],["Banque Atlantique","Indisponible"]],
-       mmBorrow:"Marché local gelé",mmLend:"Marché local gelé",
-       bpiContrat:"Non applicable — devise locale non couverte BPI",
+       spotBid:[["Banque Crédit Ouest","1,0842"],["Banque Atlantique","1,0838"]],
+       spotAsk:[["Banque Crédit Ouest","1,0858"],["Banque Atlantique","1,0862"]],
+       fwdBid90:[["Banque Crédit Ouest","1,0898"],["Banque Atlantique","1,0894"]],
+       fwdAsk90:[["Banque Crédit Ouest","1,0918"],["Banque Atlantique","1,0914"]],
+       mmBorrow:"3,50 %/an (EUR)",mmLend:"5,20 %/an (USD)",
+       bpiContrat:"Cours garanti : 1,0890 — Prime : 1,6 % — Délai max : J+15\nNote : montant garanti plafonné à 1 500 000 USD",
        bpiNego:null,
-       escompteClient:"Rapatriement possible à −25 % sur valeur initiale",
-       penaliteClient:null,
-       escompteFournisseur:"Remboursement anticipé dette locale possible",
-       penaliteFournisseur:"Maintien dette — risque de dépréciation supplémentaire",
+       swapChange:"Vente spot USD aujourd'hui + rachat à terme 90j — spot BID: 1,0842 | terme BID 90j: 1,0898",
+       swapDevises:"Échange de flux d'intérêts et de principal EUR/USD — taux USD fixe: 4,20 % | basis swap: −1,10 % | durée min: 1 an",
+       optionPut:"Put USD — Strike : 1,0900 — Prime : 1,9 % — Échéance : 90j\nAvantage : profiter d'une hausse USD si anticipation incorrecte",
+       escompteClient:"Non applicable (dividende filiale — pas de négociation commerciale)",
+       penaliteClient:null, escompteFournisseur:null, penaliteFournisseur:null,
      },
      computeHedgeResult:(instrument,banque,montant)=>{
-       const r={
-         rapatriement:200000, remboursement:150000,
-         combinee:350000, none:-80000,
-         forward_CO:0, forward_ATL:0,
-       };
-       return r[instrument]||(-80000);
+       const m=Math.min(montant||1500000,1575000); // max ±5%
+       const realized=1.1080;
+       const prime_bpi=Math.round(m/1.0890*0.016);
+       const prime_opt=Math.round(m*0.019/1.0858);
+       return {
+         forward_CO:Math.round(m/1.0918),
+         forward_ATL:Math.round(m/1.0914),
+         mm:Math.round(m/1.0910),
+         bpi_contrat:Math.round(m/1.0890)-prime_bpi,
+         none:Math.round(m/realized),
+         swap_change:Math.round(m/1.0898),
+         option_put:Math.max(Math.round(m/realized),Math.round(m/1.0900))-prime_opt,
+       }[instrument]||Math.round(m/realized);
      },
      computePertinence:(instrument,montant)=>{
-       if(instrument==="bpi_nego"||instrument==="bpi_contrat")return 0;
-       if(instrument==="forward_CO"||instrument==="forward_ATL")return 0;
-       if(instrument==="combinee")return 100;
-       if(instrument==="rapatriement")return 70;
-       if(instrument==="remboursement")return 65;
-       if(instrument==="none")return 20;
-       return 30;
+       if(!montant||montant<=0)return 0;
+       if(instrument==="bpi_nego")return 0;
+       const scores={
+         none:60, forward_CO:85, forward_ATL:90,
+         mm:80, bpi_contrat:85, swap_change:70,
+         option_put:100, swap_devises:20,
+         netting_multi:10, netting_bilateral:10, netting:10,
+         credit_syndique:0, euro_obligation:0, convertible:0,
+         escompte_fournisseur:0, penalite_fournisseur:0,
+         rapatriement:0, remboursement:0, combinee:0,
+       };
+       return scores[instrument]??20;
      },
-     realized:"La devise a encore chuté de −12 % dans les 5 jours suivants",
-     explanation:"Stratégie combinée (100 pts) : rapatrier (+200k) + rembourser (+150k) = +350k EUR. Forward impertinent (0 pt) : marchés gelés. BPI non applicable. Sans action : −80k EUR supplémentaires. Quand la tendance est clairement baissière, agir immédiatement est optimal.",
-     optimal:"combinee"},
+     realized:"EUR/USD réalisé à 3 mois : 1,1080 — Le dollar s'est déprécié de 2,1 % comme anticipé",
+     explanation:"Le dollar s'est effectivement déprécié mais de 2,1 % seulement. L'option put USD (100 pts) était optimale : elle permettait de profiter de la hausse EUR/USD tout en se protégeant si le dollar avait rebondi. Sans couverture (60 pts) : le trésorier avait raison sur la direction mais la couverture reste une bonne pratique. La variabilité ±5 % du montant rendait le forward strict légèrement exposé sur le résidu.",
+     optimal:"option_put"},
   ]},
 };
 
 // Instruments disponibles par type de round
-const getAvailableInstruments = (round) => {
-  const instruments = [];
-  if(round.currency !== "LOCAL"){
-    instruments.push({id:"none", label:"Aucune couverture", icon:"⚡", group:"Aucune"});
-    if(round.currency !== "MULTI" || round.id === 5){
-      instruments.push({id:"forward_CO", label:"Forward — Banque Crédit Ouest", icon:"🔒", group:"Forward"});
-      instruments.push({id:"forward_ATL", label:"Forward — Banque Atlantique", icon:"🔒", group:"Forward"});
-    }
-    if(round.id === 1 || round.id === 2 || round.id === 3) instruments.push({id:"mm", label:"Couverture marché monétaire", icon:"🏦", group:"Marché monétaire"});
-    if(round.id === 4) instruments.push({id:"swap_change", label:"Swap de change EUR/USD", icon:"🔄", group:"Swap"});
-    if(round.id === 5) instruments.push({id:"netting", label:"Netting + forward résiduel", icon:"♻️", group:"Netting"});
-    if(round.currency === "MULTI" && round.id !== 5) instruments.push({id:"netting_multi", label:"Netting multilatéral complet", icon:"♻️", group:"Netting"},{id:"netting_bilateral", label:"Netting bilatéral", icon:"⚖️", group:"Netting"});
-  }
-  if(round.id === 8 || (round.session === 2 && round.id === 3)){
-    instruments.push({id:"swap_devises", label:"Swap de devises EUR/USD 3 ans", icon:"💱", group:"Swap"});
-    instruments.push({id:"credit_syndique", label:"Crédit syndiqué", icon:"🏦", group:"Financement"});
-    instruments.push({id:"euro_obligation", label:"Euro-obligation", icon:"📋", group:"Financement"});
-    instruments.push({id:"convertible", label:"Obligation convertible", icon:"🔄", group:"Financement"});
-  }
-  if(round.escompteFournisseur||round.marketData?.escompteFournisseur) instruments.push({id:"escompte_fournisseur", label:"Paiement anticipé fournisseur", icon:"⚡", group:"Termes commerciaux"});
-  if(round.penaliteFournisseur||round.marketData?.penaliteFournisseur) instruments.push({id:"penalite_fournisseur", label:"Paiement différé fournisseur", icon:"⏳", group:"Termes commerciaux"});
-  if(round.marketData?.escompteClient) instruments.push({id:"escompte_client", label:"Encaissement anticipé client", icon:"💰", group:"Termes commerciaux"});
-  if(round.marketData?.penaliteClient) instruments.push({id:"penalite_client", label:"Encaissement différé client", icon:"⏳", group:"Termes commerciaux"});
-  if(round.id === 10 || (round.currency === "LOCAL")){
-    instruments.push({id:"rapatriement", label:"Rapatrier la trésorerie filiale", icon:"🏃", group:"Crise"});
-    instruments.push({id:"remboursement", label:"Rembourser la dette locale", icon:"💱", group:"Crise"});
-    instruments.push({id:"combinee", label:"Stratégie combinée (rapatriement + remboursement)", icon:"⚡", group:"Crise"});
-  }
-  // BPI toujours proposé, validé côté logique
-  instruments.push({id:"bpi_contrat", label:"BPI — Assurance change contrat", icon:"🛡️", group:"BPI"});
-  instruments.push({id:"bpi_nego", label:"BPI — Assurance change négociation", icon:"🛡️", group:"BPI"});
-  return instruments;
-};
+// Liste fixe identique à chaque round — certains instruments sont bloqués selon le contexte
+const ALL_INSTRUMENTS = [
+  // Aucune couverture
+  {id:"none",             label:"Aucune couverture",                          icon:"⚡", group:"Couverture change"},
+  // Forward
+  {id:"forward_CO",       label:"Forward — Banque Crédit Ouest",              icon:"🔒", group:"Couverture change"},
+  {id:"forward_ATL",      label:"Forward — Banque Atlantique",                icon:"🔒", group:"Couverture change"},
+  // Marché monétaire
+  {id:"mm",               label:"Couverture marché monétaire",                icon:"🏦", group:"Couverture change"},
+  // Netting
+  {id:"netting_multi",    label:"Netting multilatéral complet",               icon:"♻️", group:"Couverture change"},
+  {id:"netting_bilateral",label:"Netting bilatéral",                          icon:"⚖️", group:"Couverture change"},
+  {id:"netting",          label:"Netting + forward résiduel",                 icon:"♻️", group:"Couverture change"},
+  // Swaps — toujours affichés, caractéristiques dans les données de marché
+  {id:"swap_change",      label:"Swap de change",                             icon:"🔄", group:"Swaps"},
+  {id:"swap_devises",     label:"Swap de devises (long terme)",               icon:"💱", group:"Swaps"},
+  // Financement
+  {id:"credit_syndique",  label:"Crédit syndiqué",                            icon:"🏦", group:"Financement"},
+  {id:"euro_obligation",  label:"Euro-obligation",                            icon:"📋", group:"Financement"},
+  {id:"convertible",      label:"Obligation convertible",                     icon:"🔄", group:"Financement"},
+  // Termes commerciaux
+  {id:"escompte_fournisseur", label:"Paiement anticipé fournisseur",          icon:"💰", group:"Termes commerciaux"},
+  {id:"penalite_fournisseur", label:"Paiement différé fournisseur",           icon:"⏳", group:"Termes commerciaux"},
+  {id:"escompte_client",      label:"Encaissement anticipé client",           icon:"💰", group:"Termes commerciaux"},
+  {id:"penalite_client",      label:"Encaissement différé client",            icon:"⏳", group:"Termes commerciaux"},
+  // Option sur devise
+  {id:"option_put",       label:"Option put — vente devise protégée",         icon:"🛡️", group:"Options"},
+  {id:"option_call",      label:"Option call — achat devise protégé",         icon:"🛡️", group:"Options"},
+  // BPI — toujours affichés, bloqués si conditions non remplies
+  {id:"bpi_contrat",      label:"BPI — Assurance change contrat",             icon:"🛡️", group:"BPI"},
+  {id:"bpi_nego",         label:"BPI — Assurance change négociation",         icon:"🛡️", group:"BPI"},
+];
+
+const getAvailableInstruments = () => ALL_INSTRUMENTS;
 
 const validateInstrument = (instrument, round) => {
-  if(instrument === "bpi_nego" && !round.isAO) return {valid:false, reason:"L'assurance change négociation BPI est réservée aux appels d'offres internationaux. Ce round ne comporte pas d'appel d'offres."};
-  if(instrument === "bpi_contrat" && !round.hasCommercialContract) return {valid:false, reason:"L'assurance change contrat BPI nécessite un contrat commercial signé. Aucun contrat n'a été signé dans ce round."};
-  if(instrument === "bpi_contrat" && round.marketData?.bpiContrat?.includes("hors délai")) return {valid:false, reason:"Délai BPI dépassé : le contrat BPI doit être souscrit au plus tard 15 jours après la signature du contrat commercial."};
-  if((instrument === "forward_CO" || instrument === "forward_ATL") && round.marketData?.fwdBid90?.[0]?.[1] === "Indisponible") return {valid:false, reason:"Le marché forward est gelé dans ce contexte de crise. Aucun contrat à terme ne peut être conclu."};
+  // BPI négociation — réservé AO : bloquant strict
+  if(instrument === "bpi_nego" && !round.isAO)
+    return {valid:false, blocking:true, reason:"🚫 REFUS BPI : L'assurance change négociation est exclusivement réservée aux appels d'offres internationaux. Aucun appel d'offres n'est en cours dans ce round — la BPI ne peut pas traiter votre dossier."};
+  // BPI contrat sans contrat signé : bloquant strict
+  if(instrument === "bpi_contrat" && !round.hasCommercialContract)
+    return {valid:false, blocking:true, reason:"🚫 REFUS BPI : L'assurance change contrat nécessite un contrat commercial signé. Aucun contrat n'a été signé — la BPI ne peut pas traiter votre dossier."};
+  // BPI contrat hors délai J+15 : bloquant strict
+  if(instrument === "bpi_contrat" && round.marketData?.bpiContrat?.includes("hors délai"))
+    return {valid:false, blocking:true, reason:"🚫 REFUS BPI : Le délai de souscription est dépassé. L'assurance change contrat doit être souscrite au plus tard 15 jours après la signature du contrat commercial. La BPI ne peut pas accepter votre dossier hors délai."};
+  // Forward gelé en cas de crise
+  if((instrument === "forward_CO" || instrument === "forward_ATL") && round.marketData?.fwdBid90?.[0]?.[1] === "Indisponible")
+    return {valid:false, blocking:true, reason:"🚫 MARCHÉ GELÉ : Le marché forward est indisponible dans ce contexte de crise. Aucun contrat à terme ne peut être conclu."};
   return {valid:true};
 };
 
@@ -457,46 +494,77 @@ const getPlacements=async(s,r)=>{const{data}=await supabase.from("placements").s
 const submitPlacementDB=async(s,r,tid,c)=>{await supabase.from("placements").upsert({session:s,round_index:r,team_id:tid,choice:c},{onConflict:"session,round_index,team_id"});};
 
 // ═══ COMPOSANTS ═══
-function MarketDataPanel({data, round}){
-  const rows = [];
-  if(data.spotBid) data.spotBid.forEach((r,i)=>rows.push([`Spot BID — ${r[0]}`, r[1]]));
-  if(data.spotAsk) data.spotAsk.forEach((r,i)=>rows.push([`Spot ASK — ${r[0]}`, r[1]]));
-  if(data.fwdBid90) data.fwdBid90.forEach(r=>rows.push([`Forward BID 90j — ${r[0]}`, r[1]]));
-  if(data.fwdAsk90) data.fwdAsk90.forEach(r=>rows.push([`Forward ASK 90j — ${r[0]}`, r[1]]));
-  if(data.fwdBid30) data.fwdBid30.forEach(r=>rows.push([`Forward BID 30j — ${r[0]}`, r[1]]));
-  if(data.fwdAsk30) data.fwdAsk30.forEach(r=>rows.push([`Forward ASK 30j — ${r[0]}`, r[1]]));
-  if(data.fwdBid45) data.fwdBid45.forEach(r=>rows.push([`Forward BID 45j — ${r[0]}`, r[1]]));
-  if(data.fwdAsk45) data.fwdAsk45.forEach(r=>rows.push([`Forward ASK 45j — ${r[0]}`, r[1]]));
-  if(data.fwdBid60) data.fwdBid60.forEach(r=>rows.push([`Forward BID 60j — ${r[0]}`, r[1]]));
-  if(data.fwdAsk60) data.fwdAsk60.forEach(r=>rows.push([`Forward ASK 60j — ${r[0]}`, r[1]]));
-  if(data.fwdBid180) data.fwdBid180.forEach(r=>rows.push([`Forward BID 180j — ${r[0]}`, r[1]]));
-  if(data.fwdAsk180) data.fwdAsk180.forEach(r=>rows.push([`Forward ASK 180j — ${r[0]}`, r[1]]));
-  if(data.fwdBid365) data.fwdBid365.forEach(r=>rows.push([`Forward BID 1 an — ${r[0]}`, r[1]]));
-  if(data.fwdAsk365) data.fwdAsk365.forEach(r=>rows.push([`Forward ASK 1 an — ${r[0]}`, r[1]]));
-  if(data.mmBorrow) rows.push(["Taux emprunt", data.mmBorrow]);
-  if(data.mmLend) rows.push(["Taux prêt", data.mmLend]);
-  if(data.swapChange){rows.push(["─── Swap de change ───",""]);}
-  if(data.swapChange) data.swapChange.split("\n").forEach(l=>{const p=l.split("→");rows.push([p[0]?.trim()||l, p[1]?.trim()||""]);});
-  if(data.swapDevises){rows.push(["─── Swap de devises ───",""]);data.swapDevises.split("\n").forEach(l=>{const p=l.split(":");rows.push([p[0]?.trim()||l, p[1]?.trim()||""]);})}
-  if(data.coutTransaction) rows.push(["Coût transaction", data.coutTransaction]);
-  if(data.bpiContrat){rows.push(["─── BPI Assurance change contrat ───",""]);rows.push(["Conditions", data.bpiContrat]);}
-  if(data.bpiNego){rows.push(["─── BPI Assurance change négociation ───",""]);data.bpiNego.split("\n").forEach(l=>{const p=l.split(":");rows.push([p[0]?.trim()||l, p[1]?.trim()||""])});}
-  if(data.escompteFournisseur) rows.push(["Escompte fournisseur", data.escompteFournisseur]);
-  if(data.penaliteFournisseur) rows.push(["Pénalité fournisseur", data.penaliteFournisseur]);
-  if(data.escompteClient) rows.push(["Escompte client", data.escompteClient]);
-  if(data.penaliteClient) rows.push(["Pénalité client", data.penaliteClient]);
-  if(data.creditSyndique) rows.push(["Crédit syndiqué", data.creditSyndique]);
-  if(data.euroObligation) rows.push(["Euro-obligation", data.euroObligation]);
-  if(data.convertible) rows.push(["Obligation convertible", data.convertible]);
+function Block({title, children, accent="#334155"}){
   return(
-    <div style={{background:"rgba(0,0,0,0.45)",borderRadius:8,padding:"10px 14px",fontFamily:"monospace",fontSize:12}}>
-      <div style={{color:"#475569",fontSize:10,textTransform:"uppercase",letterSpacing:"0.12em",marginBottom:6}}>Données de marché</div>
-      {rows.map(([l,v],i)=>(
-        <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"2px 0",borderBottom:i<rows.length-1?"1px solid rgba(255,255,255,0.04)":"none",opacity:l.includes("───")?0.4:1}}>
-          <span style={{color:l.includes("───")?"#334155":"#94a3b8",fontStyle:l.includes("───")?"italic":"normal"}}>{l}</span>
-          <span style={{color:"#f0f9ff",fontWeight:600,marginLeft:8,textAlign:"right",maxWidth:"55%"}}>{v}</span>
-        </div>
-      ))}
+    <div style={{marginBottom:10,borderRadius:8,overflow:"hidden",border:"1px solid rgba(255,255,255,0.07)"}}>
+      <div style={{background:accent,padding:"4px 10px",fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",color:"#e2e8f0"}}>{title}</div>
+      <div style={{background:"rgba(0,0,0,0.35)",padding:"8px 10px",fontFamily:"monospace",fontSize:12}}>{children}</div>
+    </div>
+  );
+}
+
+function Row({label,value}){
+  return(
+    <div style={{display:"flex",justifyContent:"space-between",padding:"2px 0"}}>
+      <span style={{color:"#64748b"}}>{label}</span>
+      <span style={{color:"#f0f9ff",fontWeight:600,marginLeft:8}}>{value}</span>
+    </div>
+  );
+}
+
+function pairBanks(bidArr, askArr){
+  if(!bidArr||!askArr) return [];
+  return bidArr.map((b,i)=>({bank:b[0], bid:b[1], ask:askArr[i]?.[1]||"—"}));
+}
+
+function MarketDataPanel({data, round}){
+  const fwdKey = Object.keys(data).find(k=>k.startsWith("fwdBid"));
+  const fwdLabel = fwdKey ? fwdKey.replace("fwdBid","").replace("90","90j").replace("30","30j").replace("45","45j").replace("60","60j").replace("180","180j").replace("365","1 an") : "";
+  const fwdAskKey = fwdKey ? fwdKey.replace("Bid","Ask") : null;
+  const spotPairs = pairBanks(data.spotBid, data.spotAsk);
+  const fwdPairs = fwdKey ? pairBanks(data[fwdKey], fwdAskKey?data[fwdAskKey]:null) : [];
+  const currency = round?.currency||"";
+  const pair = currency==="GBP"?"EUR/GBP":currency==="JPY"?"EUR/JPY":currency==="MAD"?"EUR/MAD":"EUR/USD";
+  return(
+    <div>
+      {spotPairs.length>0&&<Block title="Taux Spot" accent="#1e3a5f">
+        {spotPairs.map((p,i)=><Row key={i} label={p.bank} value={`${pair} : ${p.bid} — ${p.ask}`}/>)}
+      </Block>}
+      {fwdPairs.length>0&&<Block title={`Taux Forward ${fwdLabel}`} accent="#1e3a5f">
+        {fwdPairs.map((p,i)=><Row key={i} label={p.bank} value={`${pair} : ${p.bid} — ${p.ask}`}/>)}
+      </Block>}
+      {(data.mmBorrow||data.mmLend)&&<Block title="Marché Monétaire" accent="#1e3a5f">
+        {data.mmBorrow&&<Row label="Emprunt" value={data.mmBorrow}/>}
+        {data.mmLend&&<Row label="Prêt" value={data.mmLend}/>}
+      </Block>}
+      {data.swapChange&&<Block title="Swap de Change" accent="#1a3a2f">
+        {data.swapChange.split("\n").map((l,i)=>{const p=l.split("→");return <Row key={i} label={p[0]?.trim()||l} value={p[1]?.trim()||""}/>;})}
+      </Block>}
+      {data.swapDevises&&<Block title="Swap de Devises" accent="#1a3a2f">
+        {data.swapDevises.split("\n").map((l,i)=>{const p=l.split(":");return <Row key={i} label={p[0]?.trim()||l} value={p.slice(1).join(":").trim()||""}/>;})}
+      </Block>}
+      {data.coutTransaction&&<Block title="Coûts de Transaction" accent="#2a2a1a">
+        <Row label="Coût par transfert" value={data.coutTransaction}/>
+      </Block>}
+      {data.bpiContrat&&<Block title="BPI — Assurance Change Contrat" accent="#1a2a1a">
+        {data.bpiContrat.split("—").map((l,i)=>{const p=l.trim().split(":");return <Row key={i} label={p[0]?.trim()||l.trim()} value={p.slice(1).join(":").trim()||""}/>;})}
+      </Block>}
+      {data.bpiNego&&<Block title="BPI — Assurance Change Négociation" accent="#1a2a1a">
+        {data.bpiNego.split("\n").map((l,i)=>{const p=l.split(":");return <Row key={i} label={p[0]?.trim()||l} value={p.slice(1).join(":").trim()||""}/>;})}
+      </Block>}
+      {(data.escompteFournisseur||data.penaliteFournisseur)&&<Block title="Conditions Fournisseur" accent="#2a1a1a">
+        {data.escompteFournisseur&&<Row label="Escompte (paiement anticipé)" value={data.escompteFournisseur}/>}
+        {data.penaliteFournisseur&&<Row label="Pénalité (paiement différé)" value={data.penaliteFournisseur}/>}
+      </Block>}
+      {(data.escompteClient||data.penaliteClient)&&<Block title="Conditions Client" accent="#2a1a1a">
+        {data.escompteClient&&<Row label="Escompte (encaissement anticipé)" value={data.escompteClient}/>}
+        {data.penaliteClient&&<Row label="Pénalité (encaissement différé)" value={data.penaliteClient}/>}
+      </Block>}
+      {(data.creditSyndique||data.euroObligation||data.convertible)&&<Block title="Financement International" accent="#1a1a2a">
+        {data.creditSyndique&&<Row label="Crédit syndiqué" value={data.creditSyndique}/>}
+        {data.euroObligation&&<Row label="Euro-obligation" value={data.euroObligation}/>}
+        {data.convertible&&<Row label="Obligation convertible" value={data.convertible}/>}
+      </Block>}
     </div>
   );
 }
@@ -661,7 +729,8 @@ export default function App(){
     const round=SESSIONS[gs.session]?.rounds[gs.round_index];
     if(!round)return;
     const validation=validateInstrument(selectedInstrument,round);
-    if(!validation.valid){setValidationError(validation.reason);return;}
+    if(!validation.valid&&!validation.warning){setValidationError(validation.reason);return;}
+    if(validation.warning&&!validationError){setValidationError(validation.reason);return;} // 2e clic confirme malgré warning
     const montant=parseFloat(montantInput.replace(/\s/g,"").replace(",","."))||0;
     const payload={instrument:selectedInstrument,montant};
     setMyDecision({...payload,confirmed:true});
@@ -685,7 +754,7 @@ export default function App(){
   const teamCount=teams.length,decCount=decisions.length,placCount=placements.length;
   const myTeamData=teams.find(t=>t.id===myTeam?.id),myTreasury=myTeamData?.treasury??INITIAL_TREASURY;
   const placBase=Math.max(0,myTreasury-MIN_TREASURY);
-  const availableInstruments=curRound?getAvailableInstruments(curRound):[];
+  const availableInstruments=getAvailableInstruments();
 
   // ══ LANDING ══
   if(view==="landing")return(<div style={{...bg,display:"flex",alignItems:"center",justifyContent:"center",padding:24}}><div style={{maxWidth:440,width:"100%",textAlign:"center"}}><div style={{width:64,height:64,background:"rgba(0,212,170,0.15)",borderRadius:16,display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,margin:"0 auto 16px"}}>💹</div><h1 style={{fontSize:34,fontWeight:800,color:"#f8fafc",margin:"0 0 4px",letterSpacing:"-0.03em"}}>FX Manager</h1><p style={{color:"#64748b",margin:"0 0 2px",fontSize:14,fontWeight:700}}>{COMPANY.name}</p><p style={{color:"#1e293b",margin:"0 0 36px",fontSize:12}}>{COMPANY.tag}</p><div style={{display:"flex",flexDirection:"column",gap:10}}><button style={{...btn(),padding:"14px 24px",fontSize:16,borderRadius:12,width:"100%"}} onClick={()=>setView("team-reg")}>🎓 Rejoindre en équipe</button><button style={{...outBtn(),padding:"14px 24px",fontSize:15,borderRadius:12,width:"100%"}} onClick={()=>setView("teacher-login")}>👨‍🏫 Espace Professeur</button><button style={{...outBtn(),padding:"12px 24px",fontSize:14,borderRadius:12,width:"100%"}} onClick={()=>setView("leaderboard")}>🏆 Classement en direct</button></div><p style={{color:"#0f172a",fontSize:12,marginTop:24}}>IAE Bretagne Sud - Finance Internationale L3</p></div></div>);
@@ -769,23 +838,47 @@ export default function App(){
             </div>
           ):(
             <div style={card({marginBottom:14})}>
-              {/* Sélection instrument */}
-              {Object.entries(groupedInstruments).map(([group,insts])=>(
-                <div key={group} style={{marginBottom:12}}>
-                  <div style={{color:"#334155",fontSize:10,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:6}}>{group}</div>
-                  <div style={{display:"flex",flexDirection:"column",gap:5}}>
-                    {insts.map(inst=>(
-                      <button key={inst.id} onClick={()=>{setSelectedInstrument(inst.id);setValidationError(null);}} style={{background:selectedInstrument===inst.id?"rgba(0,212,170,0.12)":"rgba(255,255,255,0.02)",border:`1px solid ${selectedInstrument===inst.id?"rgba(0,212,170,0.4)":"rgba(255,255,255,0.07)"}`,borderRadius:8,padding:"9px 12px",display:"flex",alignItems:"center",gap:8,cursor:"pointer",textAlign:"left",width:"100%"}}>
-                        <span style={{fontSize:16}}>{inst.icon}</span>
-                        <span style={{fontSize:13,color:selectedInstrument===inst.id?"#00d4aa":"#cbd5e1",fontWeight:selectedInstrument===inst.id?700:400}}>{inst.label}</span>
-                        {selectedInstrument===inst.id&&<span style={{marginLeft:"auto",color:"#00d4aa"}}>✓</span>}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
+              {/* Liste déroulante instrument — toujours la même liste complète */}
+              <div style={{marginBottom:12}}>
+                <div style={{color:"#475569",fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:6}}>Instrument de couverture</div>
+                <select value={selectedInstrument||""} onChange={e=>{setSelectedInstrument(e.target.value||null);setValidationError(null);}} style={{background:"rgba(0,0,0,0.5)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:"10px 14px",color:selectedInstrument?"#f1f5f9":"#475569",fontSize:14,width:"100%",outline:"none",cursor:"pointer"}}>
+                  <option value="">— Sélectionnez un instrument —</option>
+                  <optgroup label="── Couverture change ──">
+                    <option value="none">Aucune couverture</option>
+                    <option value="forward_CO">Vente/Achat à terme — Banque Crédit Ouest</option>
+                    <option value="forward_ATL">Vente/Achat à terme — Banque Atlantique</option>
+                    <option value="mm">Couverture marché monétaire</option>
+                    <option value="swap_change">Swap de change</option>
+                    <option value="swap_devises">Swap de devises</option>
+                  </optgroup>
+                  <optgroup label="── Termes commerciaux ──">
+                    <option value="escompte_fournisseur">Paiement anticipé fournisseur (escompte)</option>
+                    <option value="penalite_fournisseur">Paiement différé fournisseur (pénalité)</option>
+                    <option value="escompte_client">Encaissement anticipé client (escompte)</option>
+                    <option value="penalite_client">Encaissement différé client</option>
+                  </optgroup>
+                  <optgroup label="── BPI ──">
+                    <option value="bpi_contrat">BPI — Assurance change contrat</option>
+                    <option value="bpi_nego">BPI — Assurance change négociation</option>
+                  </optgroup>
+                  <optgroup label="── Netting ──">
+                    <option value="netting_bilateral">Netting bilatéral</option>
+                    <option value="netting_multi">Netting multilatéral complet</option>
+                    <option value="netting">Netting + forward résiduel</option>
+                  </optgroup>
+                  <optgroup label="── Financement ──">
+                    <option value="credit_syndique">Crédit syndiqué</option>
+                    <option value="euro_obligation">Euro-obligation</option>
+                    <option value="convertible">Obligation convertible</option>
+                  </optgroup>
+                  <optgroup label="── Gestion de crise ──">
+                    <option value="option_put">Option put (vente devise protégée)</option>
+                    <option value="option_call">Option call (achat devise protégé)</option>
+                  </optgroup>
+                </select>
+              </div>
               {/* Saisie montant */}
-              {selectedInstrument&&selectedInstrument!=="none"&&selectedInstrument!=="netting"&&selectedInstrument!=="netting_multi"&&selectedInstrument!=="netting_bilateral"&&selectedInstrument!=="combinee"&&selectedInstrument!=="rapatriement"&&selectedInstrument!=="remboursement"&&(
+              {selectedInstrument&&selectedInstrument!=="none"&&selectedInstrument!=="netting"&&selectedInstrument!=="netting_multi"&&selectedInstrument!=="netting_bilateral"&&(
                 <div style={{marginTop:12}}>
                   <div style={{color:"#475569",fontSize:11,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:5}}>Montant à couvrir ({curRound.currency})</div>
                   <input style={{...inp,fontFamily:"monospace",fontSize:16}} type="text" placeholder={`Ex: ${curRound.amount||500000}`} value={montantInput} onChange={e=>setMontantInput(e.target.value)}/>
@@ -834,7 +927,7 @@ export default function App(){
             {myTeamData?.last_placement==="index"&&gs.round_index>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#475569"}}>Placement indice (round précédent) — {MARKET_STATES[gs.round_index-1]?.label}</span><span style={{color:MARKET_STATES[gs.round_index-1]?.color,fontWeight:600}}>{MARKET_STATES[gs.round_index-1]?.rate>=0?"+":""}{((MARKET_STATES[gs.round_index-1]?.rate||0)*100).toFixed(1)} %</span></div>}
             <div style={{borderTop:"1px solid rgba(255,255,255,0.08)",marginTop:6,paddingTop:6,display:"flex",justifyContent:"space-between"}}><span style={{color:"#e2e8f0",fontWeight:700}}>Nouvelle trésorerie</span><span style={{color:myTreasury>=INITIAL_TREASURY?"#00d4aa":myTreasury<MIN_TREASURY?"#ef4444":"#f59e0b",fontWeight:800,fontSize:16}}>{fmt(myTreasury)}</span></div>
           </div></div>
-          {myDecision&&myRoundScore!==null&&<div style={card({background:myRoundScore>=90?"rgba(0,212,170,0.08)":myRoundScore>=70?"rgba(245,158,11,0.08)":myRoundScore>0?"rgba(239,68,68,0.08)":"rgba(100,100,100,0.08)",borderColor:myRoundScore>=90?"rgba(0,212,170,0.25)":myRoundScore>=70?"rgba(245,158,11,0.25)":myRoundScore>0?"rgba(239,68,68,0.25)":"rgba(100,100,100,0.25)",marginBottom:10})}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}><div><div style={{color:"#64748b",fontSize:11}}>Score de pertinence</div><div style={{color:"#e2e8f0",fontWeight:700,fontSize:13}}>Instrument : {myDecision.instrument} · {fmt(myDecision.montant||0)}</div></div><ScoreBadge score={myRoundScore}/></div><div style={{fontSize:12,color:"#475569"}}>{myRoundScore===0?"❌ Choix impertinent — voir l'explication ci-dessous":myRoundScore>=90?"🎯 Excellent !":myRoundScore>=70?"👍 Bon choix":myRoundScore>=50?"📚 Acceptable":"⚠️ Sous-optimal"}{myRoundScore>0&&curRound.optimal!==myDecision.instrument&&` — Optimal : ${curRound.optimal}`}</div></div>}
+          {myDecision&&myRoundScore!==null&&<div style={card({background:myRoundScore>=90?"rgba(0,212,170,0.08)":myRoundScore>=70?"rgba(245,158,11,0.08)":myRoundScore>0?"rgba(239,68,68,0.08)":"rgba(100,100,100,0.08)",borderColor:myRoundScore>=90?"rgba(0,212,170,0.25)":myRoundScore>=70?"rgba(245,158,11,0.25)":myRoundScore>0?"rgba(239,68,68,0.25)":"rgba(100,100,100,0.25)",marginBottom:10})}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}><div><div style={{color:"#64748b",fontSize:11}}>Score de pertinence</div><div style={{color:"#e2e8f0",fontWeight:700,fontSize:13}}>Instrument : {myDecision.instrument} · {fmt(myDecision.montant||0)}</div></div><ScoreBadge score={myRoundScore}/></div><div style={{fontSize:12,color:"#475569"}}>{myRoundScore===0?"Score : 0 — contrat non applicable dans ce contexte":myRoundScore>=90?"Score : "+myRoundScore+" / 100":myRoundScore>=70?"Score : "+myRoundScore+" / 100":myRoundScore>=50?"Score : "+myRoundScore+" / 100":"Score : "+myRoundScore+" / 100"}</div></div>}
           <div style={card({background:"rgba(0,0,0,0.4)",marginBottom:10})}><div style={{color:accent,fontWeight:700,marginBottom:4}}>📰 {curRound.realized}</div><div style={{color:"#64748b",fontSize:13,lineHeight:1.7}}>{curRound.explanation}</div></div>
           <div style={card()}><Leaderboard teams={teams} session={gs.session} showTreasury/></div>
           <p style={{color:"#1e293b",fontSize:12,textAlign:"center",marginTop:12}}>En attente du prochain round...</p>
